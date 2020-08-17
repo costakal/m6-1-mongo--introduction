@@ -105,14 +105,20 @@ const updateGreeting = async (req, res) => {
     const db = client.db("exercises");
 
     const _id = req.params._id;
-    const query = { _id };
-    const newValues = { $set: { ...req.body } };
+    const { hello } = req.body;
 
-    const r = await db.collection("greetings").updateOne(query, newValues);
+    if (!hello) throw new Error("Can't update with this data");
+
+    const query = { _id };
+    const newValues = { $set: { hello } };
+
+    const r = await db
+      .collection("greetings")
+      .updateOne(query, { ...newValues });
     assert.equal(1, r.matchedCount);
     assert.equal(1, r.modifiedCount);
 
-    res.status(200).json({ status: 200, _id, ...req.body });
+    res.status(200).json({ status: 200, data: { _id, hello } });
   } catch (err) {
     console.log(err.stack);
     res.status(500).json({ status: 500, message: err.message });
