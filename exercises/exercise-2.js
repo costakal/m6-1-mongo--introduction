@@ -11,8 +11,8 @@ const options = {
 };
 
 const createGreeting = async (req, res) => {
+  const client = await MongoClient(MONGO_URI2, options);
   try {
-    const client = await MongoClient(MONGO_URI2, options);
     await client.connect();
 
     const db = client.db("exercises");
